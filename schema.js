@@ -5,6 +5,8 @@ export const typeDefs = `#graphql
         description: String,
         price: Float,
         stocks: Int
+        categoryName: String
+        supplierName: String
     }
     type Category {
         id: ID,
@@ -18,8 +20,11 @@ export const typeDefs = `#graphql
         phone: String,
         email: String
     }
+    input ItemFilter {
+        query: String
+    }
     type Query {
-        items: [Item]
+        items(filter: ItemFilter): [Item]
         item(id: ID): Item
         categories: [Category]
         suppliers: [Supplier]

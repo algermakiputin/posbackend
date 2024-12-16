@@ -3,8 +3,8 @@ import { getSuppliers } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories } from './app/helpers/categories_resolver_helpers.js';
 export const resolvers = {
     Query: {
-        items: async () => {
-            return await getItems();
+        items: async (root, args) => {
+            return await getItems(args);
         },
         item: async (root, args) => {
             const item = await findItem(args?.id);

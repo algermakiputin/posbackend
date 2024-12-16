@@ -1,11 +1,26 @@
 import connection from "../config/database.js";
 
-export const getItems = async () => {
+export const getItems = async (params) => {
+    const { query, limit } = params.filter;
     return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM items LIMIT 10", function(error, result, fields) {
+        const sqlQuery = `
+            SELECT items.*, supplier.name as supplierName, categories.name as categoryName, categories.id as stocks
+                FROM items
+                LEFT JOIN supplier 
+                    ON items.supplier_id = supplier.id
+                LEFT JOIN categories 
+                    ON categories.id = items.category_id
+                WHERE items.name LIKE ? LIMIT ${limit ? limit : 10} OFFSET 0
+        `;
+        connection.query({
+            sql: sqlQuery,
+            values: [`%${query}%`],
+            timeout: 40
+        }, function(error, result, fields) {
             if (error) reject(error);
+            console.log(`result`, result);
             resolve(result);
-        }); 
+        });
     });
 }
 
