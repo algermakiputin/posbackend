@@ -1,20 +1,21 @@
-import { getItems } from "./app/helpers/resolver_helpers.js";
-
+import { getItems, findItem } from "./app/helpers/items_resolver_helpers.js";
+import { getSuppliers } from "./app/helpers/supplier_resolver_helpers.js";
+import { getCategories } from './app/helpers/categories_resolver_helpers.js';
 export const resolvers = {
     Query: {
         items: async () => {
-            const items = await getItems();
-            return items;
+            return await getItems();
         },
-        item: (_, args) => {
-            return {
-                name: "Alger",
-                price: 25,
-                stocks: 50
-            };
+        item: async (root, args) => {
+            const item = await findItem(args?.id);
+            return item[0];
         },
-        categories: () => {},
-        suppliers: () => {},
+        categories: async () => {
+            return await getCategories();
+        },
+        suppliers: async () => {
+            return await getSuppliers();
+        },
     },
     Mutation: {
         deleteItem(_, args) {
