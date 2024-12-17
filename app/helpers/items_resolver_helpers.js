@@ -10,11 +10,11 @@ export const getItems = async (params) => {
                     ON items.supplier_id = supplier.id
                 LEFT JOIN categories 
                     ON categories.id = items.category_id
-                WHERE items.name LIKE ? LIMIT ${limit ? limit : 10} OFFSET 0
+                WHERE items.name LIKE ? LIMIT ? OFFSET 0
         `;
         connection.query({
             sql: sqlQuery,
-            values: [`%${query}%`],
+            values: [`%${query}%`, limit ? limit : 10],
             timeout: 40
         }, function(error, result, fields) {
             if (error) reject(error);

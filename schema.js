@@ -23,6 +23,11 @@ export const typeDefs = `#graphql
     input ItemFilter {
         query: String
     }
+    input CategoryInput {
+        name: String,
+        description: String
+        id: ID
+    }
     type Query {
         items(filter: ItemFilter): [Item]
         item(id: ID): Item
@@ -32,6 +37,9 @@ export const typeDefs = `#graphql
     type Mutation {
         deleteItem(id: ID!): [Item]
         updateItem(id: ID!, editItemInput: EditItemInput): Item
+        storeCategory(category: CategoryInput): Int
+        destroyCategory(id: ID!): Boolean
+        updateCategory(category: CategoryInput): Boolean
     }
     input EditItemInput {
         name: String,

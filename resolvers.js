@@ -1,6 +1,6 @@
 import { getItems, findItem } from "./app/helpers/items_resolver_helpers.js";
 import { getSuppliers } from "./app/helpers/supplier_resolver_helpers.js";
-import { getCategories } from './app/helpers/categories_resolver_helpers.js';
+import { getCategories, storeCategory, destroyCategory, updateCategory } from './app/helpers/categories_resolver_helpers.js';
 export const resolvers = {
     Query: {
         items: async (root, args) => {
@@ -18,8 +18,14 @@ export const resolvers = {
         },
     },
     Mutation: {
-        deleteItem(_, args) {
-            // deleting the item;
+        storeCategory: async (root, args) => {
+            return await storeCategory(args.category);
+        },
+        destroyCategory: async (root, args) => {
+            return await destroyCategory(args.id);
+        },
+        updateCategory: async (root, args) => {
+            return await updateCategory(args.category);
         }
     },  
     // Item: {
