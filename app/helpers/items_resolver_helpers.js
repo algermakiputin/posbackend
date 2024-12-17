@@ -1,7 +1,6 @@
 import connection from "../config/database.js";
 
 export const getItems = async (params) => {
-    const { query, limit } = params.filter;
     return new Promise((resolve, reject) => {
         const sqlQuery = `
             SELECT items.*, supplier.name as supplierName, categories.name as categoryName, categories.id as stocks
@@ -14,11 +13,10 @@ export const getItems = async (params) => {
         `;
         connection.query({
             sql: sqlQuery,
-            values: [`%${query}%`, limit ? limit : 10],
+            values: [`%${params?.filter?.query || ''}%`, params?.filter?.limit ? params?.filter?.limit : 10],
             timeout: 40
         }, function(error, result, fields) {
             if (error) reject(error);
-            console.log(`result`, result);
             resolve(result);
         });
     });
@@ -33,6 +31,24 @@ export const findItem = async (itemId) => {
         }, function(error, result) {
             if (error) reject(error);
             resolve(result);
+        });
+    });
+}
+
+export const updateItem = async (item) => {
+    return new Promise((resolve, reject) => {
+        connection.query("UPDATE items SET ? WHERE id = ?", [], function(error, result) {
+            if (error) reject(error);
+            resolve(result);
+        });
+    });
+}
+
+export const destroyItem = async (id) => {
+    return new Promise((resolve, reject) => {
+        connection.query("DELETE items WHERE id = ?", id, function(error, result) {
+            if (error) reject(error);
+            resolve(true);
         });
     });
 }

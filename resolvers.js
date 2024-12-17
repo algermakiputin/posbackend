@@ -18,6 +18,7 @@ export const resolvers = {
         },
     },
     Mutation: {
+        
         storeCategory: async (root, args) => {
             return await storeCategory(args.category);
         },
@@ -27,10 +28,5 @@ export const resolvers = {
         updateCategory: async (root, args) => {
             return await updateCategory(args.category);
         }
-    },  
-    // Item: {
-    //     items(parent) {
-    //         console.log(`parent`, parent);
-    //     }
-    // }
+    }
 }
