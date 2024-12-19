@@ -29,13 +29,14 @@ export const typeDefs = `#graphql
         id: ID
     }
     input ItemInput {
+        barcode: String
         name: String, 
         description: String,
-        price: Float,
-        capital: Float
+        price: String,
+        capital: String
         stocks: Int,
-        categoryId: String
-        supplierId: String
+        category_id: String
+        supplier_id: String
     }
     input SupplierInput {
         name: String,
@@ -52,7 +53,7 @@ export const typeDefs = `#graphql
         data: String
     }
     type Mutation {
-        storeItem(item: ItemInput!): Boolean
+        storeItem(item: ItemInput!): GenericRepose
         updateItem(id: ID!, editItemInput: EditItemInput): Item
         destroyItem(id: ID!): GenericRepose
         storeCategory(category: CategoryInput): Int

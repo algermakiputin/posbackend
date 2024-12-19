@@ -14,7 +14,7 @@ export const getItems = async (params) => {
         connection.query({
             sql: sqlQuery,
             values: [`%${params?.filter?.query || ''}%`, params?.filter?.limit ? params?.filter?.limit : 10],
-            timeout: 40
+            timeout: 60
         }, function(error, result, fields) {
             if (error) reject(error);
             resolve(result);
@@ -52,3 +52,22 @@ export const destroyItem = async (id) => {
         });
     });
 }
+
+export const storeItem = async (item) => {
+    item.price = parseFloat(item.price);
+    item.capital = parseFloat(item.capital);
+    item.category_id = Number(item.category_id);
+    item.supplier_id = Number(item.supplier_id);
+    item.image = '';
+
+    return new Promise((resolve, reject) => {
+        connection.query("INSERT INTO items SET ?", item, function(error, result) {
+            if (error) reject(error);
+            resolve({
+                success: true,
+                message: 'Item added successfully',
+                data: JSON.stringify(result)
+            });
+        });
+    });
+};

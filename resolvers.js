@@ -1,4 +1,4 @@
-import { getItems, findItem } from "./app/helpers/items_resolver_helpers.js";
+import { getItems, findItem, storeItem } from "./app/helpers/items_resolver_helpers.js";
 import { getSuppliers } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories, storeCategory, destroyCategory, updateCategory } from './app/helpers/categories_resolver_helpers.js';
 export const resolvers = {
@@ -18,7 +18,6 @@ export const resolvers = {
         },
     },
     Mutation: {
-        
         storeCategory: async (root, args) => {
             return await storeCategory(args.category);
         },
@@ -27,6 +26,9 @@ export const resolvers = {
         },
         updateCategory: async (root, args) => {
             return await updateCategory(args.category);
+        },
+        storeItem: async (root, args) => {
+            return await storeItem(args.item);
         }
     }
 }
