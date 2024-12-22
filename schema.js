@@ -7,6 +7,7 @@ export const typeDefs = `#graphql
         stocks: Int
         categoryName: String
         supplierName: String
+        barcode: String
     }
     type Category {
         id: ID,
@@ -21,7 +22,9 @@ export const typeDefs = `#graphql
         email: String
     }
     input ItemFilter {
-        query: String
+        query: String,
+        categories: [String]
+        suppliers: [String]
     }
     input CategoryInput {
         name: String,
@@ -52,6 +55,20 @@ export const typeDefs = `#graphql
         message: String,
         data: String
     }
+    input SalesInput {
+        cart: Cart
+        customerId: Int
+        customerName: String
+    }
+    input Cart {
+        lineItems: [lineItem]
+    }
+    input lineItem {
+        itemId: String
+        name: String
+        price: Int
+        quantity: Int
+    }
     type Mutation {
         storeItem(item: ItemInput!): GenericRepose
         updateItem(id: ID!, editItemInput: EditItemInput): Item
@@ -60,6 +77,7 @@ export const typeDefs = `#graphql
         destroyCategory(id: ID!): Boolean
         updateCategory(category: CategoryInput): Boolean
         storeSupplier(supplier: SupplierInput): GenericRepose
+        storeSales(sales: SalesInput): GenericRepose
     }
     input EditItemInput {
         name: String,

@@ -2,23 +2,38 @@ import connection from "../config/database.js";
 
 export const getItems = async (params) => {
     return new Promise((resolve, reject) => {
-        const sqlQuery = `
+        var sqlQuery = `
             SELECT items.*, supplier.name as supplierName, categories.name as categoryName, categories.id as stocks
                 FROM items
                 LEFT JOIN supplier 
                     ON items.supplier_id = supplier.id
                 LEFT JOIN categories 
                     ON categories.id = items.category_id
-                WHERE items.name LIKE ? LIMIT ? OFFSET 0
+                WHERE items.name LIKE ? 
         `;
-        connection.query({
+        if (params?.filter?.categories?.length) {
+            sqlQuery = sqlQuery.concat(" AND category_id IN (?)")
+        } 
+
+        if (params?.filter?.suppliers?.length) {
+            sqlQuery = sqlQuery.concat(" AND supplier_id IN (?)")
+        }
+
+        sqlQuery = sqlQuery.concat(" LIMIT 10 OFFSET 0");
+        const query = connection.query({
             sql: sqlQuery,
-            values: [`%${params?.filter?.query || ''}%`, params?.filter?.limit ? params?.filter?.limit : 10],
+            values: [
+                `%${params?.filter?.query || ''}%`, 
+                params?.filter?.categories,
+                params?.filter?.suppliers,
+                params?.filter?.limit ? params?.filter?.limit : 10, 
+            ],
             timeout: 60
         }, function(error, result, fields) {
             if (error) reject(error);
             resolve(result);
         });
+        
     });
 }
 
