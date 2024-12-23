@@ -8,6 +8,7 @@ export const typeDefs = `#graphql
         categoryName: String
         supplierName: String
         barcode: String
+        capital: Float
     }
     type Category {
         id: ID,
@@ -44,11 +45,27 @@ export const typeDefs = `#graphql
     input SupplierInput {
         name: String,
     }
+    type ItemsResponse {
+        data: [Item]
+        count: Int
+    }
+    type TransactionDetails {
+        transaction_number: String
+        total: Int
+        totalItems: Int
+    }
+    type SalesResponse {
+        totalEarnings: String,
+        itemSold: String,
+        netSales: String,
+        transactions: [TransactionDetails]
+    }
     type Query {
-        items(filter: ItemFilter): [Item]
+        items(filter: ItemFilter): ItemsResponse
         item(id: ID): Item
         categories: [Category]
         suppliers: [Supplier]
+        getSales: SalesResponse
     }
     type GenericRepose {
         success: Boolean,
@@ -68,6 +85,8 @@ export const typeDefs = `#graphql
         name: String
         price: Int
         quantity: Int
+        barcode: String
+        capital: Float
     }
     type Mutation {
         storeItem(item: ItemInput!): GenericRepose

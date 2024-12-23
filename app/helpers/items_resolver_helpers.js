@@ -20,19 +20,27 @@ export const getItems = async (params) => {
         }
 
         sqlQuery = sqlQuery.concat(" LIMIT 10 OFFSET 0");
-        const query = connection.query({
-            sql: sqlQuery,
-            values: [
-                `%${params?.filter?.query || ''}%`, 
-                params?.filter?.categories,
-                params?.filter?.suppliers,
-                params?.filter?.limit ? params?.filter?.limit : 10, 
-            ],
-            timeout: 60
-        }, function(error, result, fields) {
-            if (error) reject(error);
-            resolve(result);
+        connection.query("SELECT COUNT(id) as total_rows FROM items", function(countError, countResult) {
+            if (countError) reject(countError);
+            console.log(`result`, countResult);
+            connection.query({
+                sql: sqlQuery,
+                values: [
+                    `%${params?.filter?.query || ''}%`, 
+                    params?.filter?.categories,
+                    params?.filter?.suppliers,
+                    params?.filter?.limit ? params?.filter?.limit : 10, 
+                ],
+                timeout: 60
+            }, function(error, result, fields) {
+                if (error) reject(error);
+                resolve({
+                    data: result,
+                    count: countResult[0]?.total_rows
+                });
+            });
         });
+        
         
     });
 }

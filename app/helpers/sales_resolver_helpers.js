@@ -24,6 +24,7 @@ export const storeSales = (args) => {
                     }
                     console.log(`sales result`, sales_result);
                     const salesId = parseInt(sales_result?.insertId);
+                    console.log(`args`, args);
                     const lineItems = args?.lineItems.map((lineItem) => {
                         const newValue = {
                             ...lineItem,
@@ -41,6 +42,7 @@ export const storeSales = (args) => {
                         delete newValue?.itemId;
                         return newValue;
                     })
+                   
                     connection.query("INSERT INTO sales_description SET ?", lineItems, function(error, result) {
                         if (error) {
                             return connection.rollback(function() {
@@ -60,6 +62,34 @@ export const storeSales = (args) => {
             });
             
         });
+    })
+}
+
+export const getSales = () => {
+    const salesQuery = `
+        SELECT SUM(price * quantity) as totalEarnings, SUM(quantity) as itemSold, SUM((price - capital) * quantity) as netSales
+            FROM sales_description
+    `;
+    return new Promise((resolve, reject) => {
+        connection.query(salesQuery, function(error, salesQueryResult) {
+            if (error) reject(error);
+            const sales_description_query = `
+                SELECT sales.transaction_number, SUM(sales_description.quantity) as totalItems, SUM(sales_description.price * sales_description.quantity) as total
+                    FROM sales 
+                    INNER JOIN sales_description ON sales_description.sales_id = sales.id
+                    GROUP BY sales.id
+                    ORDER BY sales.id DESC
+                    LIMIT 10
+            `;
+            connection.query(sales_description_query, function(error, result) {
+                if (error) reject(error);
+                console.log(`result`, result);
+                resolve({
+                    ...salesQueryResult[0],
+                    transactions: result
+                })
+            });
+        })
     })
 }
 
