@@ -74,7 +74,7 @@ export const getSales = () => {
         connection.query(salesQuery, function(error, salesQueryResult) {
             if (error) reject(error);
             const sales_description_query = `
-                SELECT sales.transaction_number, SUM(sales_description.quantity) as totalItems, SUM(sales_description.price * sales_description.quantity) as total
+                SELECT sales.transaction_number, sales.customer_name, SUM(sales_description.quantity) as totalItems, SUM(sales_description.price * sales_description.quantity) as total
                     FROM sales 
                     INNER JOIN sales_description ON sales_description.sales_id = sales.id
                     GROUP BY sales.id

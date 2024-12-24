@@ -81,10 +81,9 @@ export const storeItem = async (item) => {
     item.capital = parseFloat(item.capital);
     item.category_id = Number(item.category_id);
     item.supplier_id = Number(item.supplier_id);
-    item.image = '';
-
     return new Promise((resolve, reject) => {
         connection.query("INSERT INTO items SET ?", item, function(error, result) {
+            console.log(`error`, error);
             if (error) reject(error);
             resolve({
                 success: true,

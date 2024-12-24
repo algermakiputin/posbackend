@@ -41,6 +41,7 @@ export const typeDefs = `#graphql
         stocks: Int,
         category_id: String
         supplier_id: String
+        image: String
     }
     input SupplierInput {
         name: String,
@@ -53,6 +54,7 @@ export const typeDefs = `#graphql
         transaction_number: String
         total: Int
         totalItems: Int
+        customer_name: String
     }
     type SalesResponse {
         totalEarnings: String,
