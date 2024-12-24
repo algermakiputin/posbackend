@@ -101,7 +101,7 @@ export const getItem = (id) => {
             sql: query, 
             values: [id],
         }, function(error, result) {
-            console.log(`resultqs`, result);
+            console.log(`result`, result);
             if (error) reject(error);
             resolve(result[0]);
         })

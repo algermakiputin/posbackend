@@ -9,6 +9,8 @@ export const typeDefs = `#graphql
         supplierName: String
         barcode: String
         capital: Float
+        supplier_id: String
+        category_id: String
     }
     type Category {
         id: ID,
