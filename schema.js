@@ -92,7 +92,7 @@ export const typeDefs = `#graphql
     }
     type Mutation {
         storeItem(item: ItemInput!): GenericRepose
-        updateItem(id: ID!, editItemInput: EditItemInput): Item
+        updateItem(editItemInput: EditItemInput): Item
         destroyItem(id: ID!): GenericRepose
         storeCategory(category: CategoryInput): Int
         destroyCategory(id: ID!): Boolean
@@ -101,9 +101,14 @@ export const typeDefs = `#graphql
         storeSales(sales: SalesInput): GenericRepose
     }
     input EditItemInput {
+        id: ID!,
         name: String,
         description: String,
-        price: Float,
+        price: Int,
         stocks: Int
+        capital: Int,
+        image: String,
+        supplier_id: String,
+        category_id: String,
     }
 `;

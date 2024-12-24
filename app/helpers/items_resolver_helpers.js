@@ -93,3 +93,17 @@ export const storeItem = async (item) => {
         });
     });
 };
+
+export const getItem = (id) => {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM items WHERE id = ?`;
+        connection.query({
+            sql: query, 
+            values: [id],
+        }, function(error, result) {
+            console.log(`resultqs`, result);
+            if (error) reject(error);
+            resolve(result[0]);
+        })
+    });
+};
