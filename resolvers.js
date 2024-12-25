@@ -1,4 +1,4 @@
-import { getItems, findItem, storeItem, getItem } from "./app/helpers/items_resolver_helpers.js";
+import { getItems, findItem, storeItem, getItem, updateItem, destroyItem } from "./app/helpers/items_resolver_helpers.js";
 import { getSuppliers } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories, storeCategory, destroyCategory, updateCategory } from './app/helpers/categories_resolver_helpers.js';
 import { getSales, storeSales } from "./app/helpers/sales_resolver_helpers.js";
@@ -39,6 +39,12 @@ export const resolvers = {
         },
         storeSales: async (root, args) => {
             return await storeSales(args?.sales?.cart);
+        },
+        updateItem: async (root, args) => {
+            return await updateItem(args?.editItemInput);
+        },
+        destroyItem: async(root, args) => {
+            return await destroyItem(args?.id);
         }
     }
 }

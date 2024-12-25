@@ -19,7 +19,7 @@ export const getItems = async (params) => {
             sqlQuery = sqlQuery.concat(" AND supplier_id IN (?)")
         }
 
-        sqlQuery = sqlQuery.concat(" LIMIT 10 OFFSET 0");
+        sqlQuery = sqlQuery.concat(" ORDER BY items.id DESC LIMIT 10 OFFSET 0");
         connection.query("SELECT COUNT(id) as total_rows FROM items", function(countError, countResult) {
             if (countError) reject(countError);
             console.log(`result`, countResult);
@@ -60,18 +60,24 @@ export const findItem = async (itemId) => {
 
 export const updateItem = async (item) => {
     return new Promise((resolve, reject) => {
-        connection.query("UPDATE items SET ? WHERE id = ?", [], function(error, result) {
+        connection.query("UPDATE items SET ? WHERE id = ?", [item, item?.id], function(error, result) {
             if (error) reject(error);
-            resolve(result);
+            resolve({
+                success:true, 
+                message: JSON.stringify(result)
+            });
         });
     });
 }
 
 export const destroyItem = async (id) => {
     return new Promise((resolve, reject) => {
-        connection.query("DELETE items WHERE id = ?", id, function(error, result) {
+        connection.query("DELETE FROM items WHERE id = ?", id, function(error, result) {
             if (error) reject(error);
-            resolve(true);
+            return {
+                success: true,
+                message: JSON.stringify(result)
+            }
         });
     });
 }
