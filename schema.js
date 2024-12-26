@@ -96,8 +96,8 @@ export const typeDefs = `#graphql
         storeItem(item: ItemInput!): GenericRepose
         updateItem(editItemInput: EditItemInput): GenericRepose
         destroyItem(id: ID!): GenericRepose
-        storeCategory(category: CategoryInput): Int
-        destroyCategory(id: ID!): Boolean
+        storeCategory(category: CategoryInput): GenericRepose
+        destroyCategory(id: ID!): GenericRepose
         updateCategory(category: CategoryInput): Boolean
         storeSupplier(supplier: SupplierInput): GenericRepose
         storeSales(sales: SalesInput): GenericRepose
