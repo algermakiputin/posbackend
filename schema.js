@@ -92,6 +92,12 @@ export const typeDefs = `#graphql
         barcode: String
         capital: Float
     }
+    input SupplierInput {
+        name: String
+        contact: String
+        address: String
+        email: String
+    }
     type Mutation {
         storeItem(item: ItemInput!): GenericRepose
         updateItem(editItemInput: EditItemInput): GenericRepose
@@ -101,6 +107,7 @@ export const typeDefs = `#graphql
         updateCategory(category: CategoryInput): Boolean
         storeSupplier(supplier: SupplierInput): GenericRepose
         storeSales(sales: SalesInput): GenericRepose
+        destroySupplier(id: ID!): GenericRepose
     }
     input EditItemInput {
         id: ID!

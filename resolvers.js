@@ -1,5 +1,5 @@
 import { getItems, findItem, storeItem, getItem, updateItem, destroyItem } from "./app/helpers/items_resolver_helpers.js";
-import { getSuppliers } from "./app/helpers/supplier_resolver_helpers.js";
+import { destroySupplier, getSuppliers, storeSupplier } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories, storeCategory, destroyCategory, updateCategory } from './app/helpers/categories_resolver_helpers.js';
 import { getSales, storeSales } from "./app/helpers/sales_resolver_helpers.js";
 export const resolvers = {
@@ -45,6 +45,13 @@ export const resolvers = {
         },
         destroyItem: async(root, args) => {
             return await destroyItem(args?.id);
+        },
+        destroySupplier: async(root, args) => {
+            return await destroySupplier(args?.id);
+        },
+        storeSupplier: async(root, args) => {
+            console.log(`args`, args);
+            return await storeSupplier(args?.supplier);
         }
     }
 }
