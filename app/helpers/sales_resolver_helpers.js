@@ -1,4 +1,6 @@
-import connection from "../config/database.js"
+import connection from "../config/database.js";
+import * as dateFns from 'date-fns';
+
 export const storeSales = (args) => {
     return new Promise((resolve, reject) => {
         connection.beginTransaction(function(error) {
@@ -85,12 +87,54 @@ export const getSales = () => {
                 if (error) reject(error);
                 console.log(`result`, result);
                 resolve({
-                    ...salesQueryResult[0],
+                    ...salesQueryResult?.[0],
                     transactions: result
                 })
             });
         })
     })
+}
+
+export const getSalesOverView = () => {
+    const today = new Date();
+    const from = dateFns.subMonths(today, 11);
+    const format = "yyyy-MM-dd";
+    const keyFormat = "MMM";
+    const data = [];
+    for (var i = 11; i > 0; i--) {
+        const dateKey =  dateFns.subMonths(today, i);
+        data[formatDate(dateKey, keyFormat)] = 0;
+    }
+    data[formatDate(today, keyFormat)] = 0;
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT * FROM sales_description 
+	            WHERE DATE_FORMAT(created_at, '%Y-%m-%d') BETWEEN "${formatDate(from, format)}" AND "${formatDate(today, format)}"
+        `;
+        connection.query(query, function(error, result) {
+            if (error) reject(error);
+            if (result?.length) {
+                result?.forEach((sale) => {
+                    const key = formatDate(sale?.created_at, keyFormat);
+                    if (Object.hasOwn(data, key)) {
+                        data[key] = data[key] + sale?.price * sale?.quantity;
+                    } else {
+                        data[key] = sale?.price * sale?.quantity;
+                    }
+                });
+            }
+            const response = {
+                data: Object.values(data)?.map((value) => value),
+                keys: Object.keys(data)?.map((value) => value ),
+            };
+            console.log(`response`, response);
+            resolve(response);
+        });
+    });
+}
+
+const formatDate = (date, format) => {
+    return dateFns.format(date, format);
 }
 
 const generateTransactionNumber = (lastId) => {

@@ -64,12 +64,24 @@ export const typeDefs = `#graphql
         netSales: String,
         transactions: [TransactionDetails]
     }
+    type InventorySummaryResponse {
+        totalItems: Float
+        capital: Float
+        categories: Float
+        value: Float
+    }
+    type SalesOverViewResponse {
+        data: [Float]
+        keys: [String]
+    }
     type Query {
         items(filter: ItemFilter): ItemsResponse
         item(id: ID): Item
         categories: [Category]
         suppliers: [Supplier]
         getSales: SalesResponse
+        inventorySummary: InventorySummaryResponse
+        getSalesOverview: SalesOverViewResponse
     }
     type GenericRepose {
         success: Boolean,

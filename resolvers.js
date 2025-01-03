@@ -1,7 +1,7 @@
-import { getItems, findItem, storeItem, getItem, updateItem, destroyItem } from "./app/helpers/items_resolver_helpers.js";
+import { getItems, findItem, storeItem, getItem, updateItem, destroyItem, getInventorySummary } from "./app/helpers/items_resolver_helpers.js";
 import { destroySupplier, getSuppliers, storeSupplier } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories, storeCategory, destroyCategory, updateCategory } from './app/helpers/categories_resolver_helpers.js';
-import { getSales, storeSales } from "./app/helpers/sales_resolver_helpers.js";
+import { getSales, getSalesOverView, storeSales } from "./app/helpers/sales_resolver_helpers.js";
 export const resolvers = {
     Query: {
         items: async (root, args) => {
@@ -22,6 +22,12 @@ export const resolvers = {
         },
         item: async (root, args) => {
             return await getItem(args.id);
+        },
+        inventorySummary: async (root, args) => {
+            return await getInventorySummary(args);
+        },
+        getSalesOverview: async (root, args) => {
+            return await getSalesOverView(args);
         }
     },
     Mutation: {
@@ -44,6 +50,7 @@ export const resolvers = {
             return await updateItem(args?.editItemInput);
         },
         destroyItem: async(root, args) => {
+            console.log(`args`, args);
             return await destroyItem(args?.id);
         },
         destroySupplier: async(root, args) => {

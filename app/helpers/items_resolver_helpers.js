@@ -74,10 +74,10 @@ export const destroyItem = async (id) => {
     return new Promise((resolve, reject) => {
         connection.query("DELETE FROM items WHERE id = ?", id, function(error, result) {
             if (error) reject(error);
-            return {
+            resolve({
                 success: true,
                 message: JSON.stringify(result)
-            }
+            }); 
         });
     });
 }
@@ -113,3 +113,21 @@ export const getItem = (id) => {
         })
     });
 };
+
+export const getInventorySummary = () => {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT COUNT(id) as totalItems, COUNT(DISTINCT category_id) as category_count, SUM(price * stocks) as totalValue, SUM(stocks * capital) as capital
+                FROM items
+        `
+        connection.query(query, function(error, result) {
+            if (error) reject(error);
+            resolve({
+                totalItems: result?.[0]?.totalItems,
+                categories: result?.[0]?.category_count,
+                value: result?.[0]?.totalValue,
+                capital: result?.[0]?.capital,
+            });
+        });
+    });
+}
