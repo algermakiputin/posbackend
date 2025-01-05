@@ -74,6 +74,12 @@ export const typeDefs = `#graphql
         data: [Float]
         keys: [String]
     }
+    type SalesDetails {
+        name: String
+        price: Float 
+        capital: Float
+        quantity: Int
+    }
     type Query {
         items(filter: ItemFilter): ItemsResponse
         item(id: ID): Item
@@ -82,6 +88,7 @@ export const typeDefs = `#graphql
         getSales: SalesResponse
         inventorySummary: InventorySummaryResponse
         getSalesOverview: SalesOverViewResponse
+        getSalesDetails(id: ID): [SalesDetails]
     }
     type GenericRepose {
         success: Boolean,

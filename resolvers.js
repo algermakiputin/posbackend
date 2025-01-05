@@ -1,7 +1,7 @@
 import { getItems, findItem, storeItem, getItem, updateItem, destroyItem, getInventorySummary } from "./app/helpers/items_resolver_helpers.js";
 import { destroySupplier, getSuppliers, storeSupplier } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories, storeCategory, destroyCategory, updateCategory } from './app/helpers/categories_resolver_helpers.js';
-import { getSales, getSalesOverView, storeSales } from "./app/helpers/sales_resolver_helpers.js";
+import { getSales, getSalesDetails, getSalesOverView, storeSales } from "./app/helpers/sales_resolver_helpers.js";
 export const resolvers = {
     Query: {
         items: async (root, args) => {
@@ -28,6 +28,9 @@ export const resolvers = {
         },
         getSalesOverview: async (root, args) => {
             return await getSalesOverView(args);
+        },
+        getSalesDetails: async (root, args) => {
+            return await getSalesDetails(args.id);
         }
     },
     Mutation: {

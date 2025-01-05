@@ -127,9 +127,17 @@ export const getSalesOverView = () => {
                 data: Object.values(data)?.map((value) => value),
                 keys: Object.keys(data)?.map((value) => value ),
             };
-            console.log(`response`, response);
             resolve(response);
         });
+    });
+}
+
+export const getSalesDetails = (sales_id) => {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT * FROM sales_description WHERE sales_id = ?", sales_id, function(error, result) {
+            if (error) reject(error);
+            resolve(result);
+        })
     });
 }
 
