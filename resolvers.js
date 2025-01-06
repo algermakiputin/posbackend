@@ -18,7 +18,7 @@ export const resolvers = {
             return await getSuppliers();
         },
         getSales: async () => {
-            return await getSales();
+            return await getSales("Last 30 Days");
         },
         item: async (root, args) => {
             return await getItem(args.id);
@@ -30,7 +30,8 @@ export const resolvers = {
             return await getSalesOverView(args);
         },
         getSalesDetails: async (root, args) => {
-            return await getSalesDetails(args.id);
+            console.log(`args`, args);
+            return await getSalesDetails(args.transaction_number);
         }
     },
     Mutation: {
@@ -47,6 +48,7 @@ export const resolvers = {
             return await storeItem(args.item);
         },
         storeSales: async (root, args) => {
+            console.log(`args`, args);
             return await storeSales(args?.sales?.cart);
         },
         updateItem: async (root, args) => {

@@ -1,6 +1,7 @@
 import connection from "../config/database.js";
 
 export const getItems = async (params) => {
+    console.log(`params`, params);
     return new Promise((resolve, reject) => {
         var sqlQuery = `
             SELECT items.*, supplier.name as supplierName, categories.name as categoryName, categories.id as stocks
@@ -19,17 +20,15 @@ export const getItems = async (params) => {
             sqlQuery = sqlQuery.concat(" AND supplier_id IN (?)")
         }
 
-        sqlQuery = sqlQuery.concat(" ORDER BY items.id DESC LIMIT 10 OFFSET 0");
+        sqlQuery = sqlQuery.concat(` ORDER BY items.id DESC LIMIT ${params?.filter?.limit} OFFSET 0`);
         connection.query("SELECT COUNT(id) as total_rows FROM items", function(countError, countResult) {
             if (countError) reject(countError);
-            console.log(`result`, countResult);
             connection.query({
                 sql: sqlQuery,
                 values: [
                     `%${params?.filter?.query || ''}%`, 
                     params?.filter?.categories,
                     params?.filter?.suppliers,
-                    params?.filter?.limit ? params?.filter?.limit : 10, 
                 ],
                 timeout: 60
             }, function(error, result, fields) {

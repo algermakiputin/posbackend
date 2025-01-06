@@ -28,6 +28,7 @@ export const typeDefs = `#graphql
         query: String,
         categories: [String]
         suppliers: [String]
+        limit: Int
     }
     input CategoryInput {
         name: String,
@@ -57,6 +58,7 @@ export const typeDefs = `#graphql
         total: Int
         totalItems: Int
         customer_name: String
+        date_time: String
     }
     type SalesResponse {
         totalEarnings: String,
@@ -79,16 +81,17 @@ export const typeDefs = `#graphql
         price: Float 
         capital: Float
         quantity: Int
+        created_at: String
     }
     type Query {
         items(filter: ItemFilter): ItemsResponse
         item(id: ID): Item
         categories: [Category]
         suppliers: [Supplier]
-        getSales: SalesResponse
+        getSales(filter: String): SalesResponse
         inventorySummary: InventorySummaryResponse
         getSalesOverview: SalesOverViewResponse
-        getSalesDetails(id: ID): [SalesDetails]
+        getSalesDetails(transaction_number: String): [SalesDetails]
     }
     type GenericRepose {
         success: Boolean,
