@@ -2,6 +2,7 @@ import { getItems, findItem, storeItem, getItem, updateItem, destroyItem, getInv
 import { destroySupplier, getSuppliers, storeSupplier } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories, storeCategory, destroyCategory, updateCategory } from './app/helpers/categories_resolver_helpers.js';
 import { getSales, getSalesDetails, getSalesOverView, storeSales } from "./app/helpers/sales_resolver_helpers.js";
+import { register, login } from './app/helpers/users_resolver_helpers.js';
 export const resolvers = {
     Query: {
         items: async (root, args) => {
@@ -62,8 +63,13 @@ export const resolvers = {
             return await destroySupplier(args?.id);
         },
         storeSupplier: async(root, args) => {
-            console.log(`args`, args);
             return await storeSupplier(args?.supplier);
+        },
+        register: async(root, args) => {
+            return await register(args.user);
+        },
+        login: async(root, args) => {
+            return await login(args.user)
         }
     }
 }

@@ -120,6 +120,25 @@ export const typeDefs = `#graphql
         address: String
         email: String
     }
+    input UserInput {
+        firstName: String!
+        lastName: String!
+        email: String!
+        username: String!
+        password: String!
+        confirmPassword: String!
+    }
+    type User {
+        id: String
+        email: String
+        token: String
+        firstName: String
+        lastName: String
+    }
+    input LoginInput {
+        email: String
+        password: String
+    }
     type Mutation {
         storeItem(item: ItemInput!): GenericRepose
         updateItem(editItemInput: EditItemInput): GenericRepose
@@ -130,6 +149,8 @@ export const typeDefs = `#graphql
         storeSupplier(supplier: SupplierInput): GenericRepose
         storeSales(sales: SalesInput): GenericRepose
         destroySupplier(id: ID!): GenericRepose
+        register(user: UserInput): User
+        login(user: LoginInput): User
     }
     input EditItemInput {
         id: ID!
