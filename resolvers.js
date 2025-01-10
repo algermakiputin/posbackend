@@ -69,6 +69,7 @@ export const resolvers = {
             return await register(args.user);
         },
         login: async(root, args, context) => {
+            console.log(`context`, context);
             return await login(args.user)
         }
     }

@@ -2,9 +2,10 @@ import connection from "../config/database.js";
 import jsonwebtoken from "jsonwebtoken";
 import * as bcrypt from 'bcrypt';
 import 'dotenv/config';
-import { setContext } from "@apollo/client/link/context/index.js";
+import { GraphQLError } from "graphql";
 import { LocalStorage } from "node-localstorage";
 global.localStorage = new LocalStorage('./scratch');
+
 export const register = async (user) => {
     if (user.password == user.confirmPassword) {
         const hashPassword = await bcrypt.hash(user.password, 12);
@@ -26,7 +27,7 @@ export const register = async (user) => {
             });
             connection.query("INSERT INTO users SET ?", data, function(error, result) {
                 if (error) reject(error);
-                const jwtToken = generateToken(result?.insertId, user.email);
+                const jwtToken = generateToken(result?.insertId, user);
                 console.log(`jwt token`, jwtToken);
                 resolve({
                     token: jwtToken,
@@ -50,7 +51,7 @@ export const login = async (user) => {
                 if (result?.length) {
                     const match = await bcrypt.compare(user.password, result?.[0]?.password);
                     if (match) {
-                        const token = generateToken(result?.[0]?.id, user?.email);
+                        const token = generateToken(result?.[0]?.id, result?.[0]);
                         localStorage.setItem('token', token);
                         resolve({
                             token,
@@ -60,7 +61,7 @@ export const login = async (user) => {
                             id: result?.[0]?.id
                         })
                     } else {
-                        reject("Incorrect username or password");
+                        return new GraphQLError("Incorrect username or password");
                     }
                 }
             });
@@ -68,9 +69,11 @@ export const login = async (user) => {
     }
 }
 
-const generateToken = (id, email) => {
+const generateToken = (id, user) => {
     return jsonwebtoken.sign({
         id,
-        email
+        email: user?.email,
+        firstName: user?.firstName,
+        lastName: user?.lastName
     }, process.env.SECRET_KEY, { expiresIn: '1h'} );
 };

@@ -1,5 +1,5 @@
 import mysql from 'mysql';
-import 'dotenv/config'
+import 'dotenv/config';
 
 var connection = mysql.createConnection({
     host     : process.env.DATABASE_HOST,
@@ -7,7 +7,7 @@ var connection = mysql.createConnection({
     password : process.env.DATABASE_PASSWORD,
     database : process.env.DATABASE_NAME,
     port: process.env.DATABASE_PORT,
-    debug: true
+    //debug: true
 });
 
 connection.connect(function(err) {
