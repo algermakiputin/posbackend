@@ -1,8 +1,10 @@
 import connection from "../config/database.js";
 import jsonwebtoken from "jsonwebtoken";
 import * as bcrypt from 'bcrypt';
-import 'dotenv/config'
-
+import 'dotenv/config';
+import { setContext } from "@apollo/client/link/context/index.js";
+import { LocalStorage } from "node-localstorage";
+global.localStorage = new LocalStorage('./scratch');
 export const register = async (user) => {
     if (user.password == user.confirmPassword) {
         const hashPassword = await bcrypt.hash(user.password, 12);
@@ -15,8 +17,13 @@ export const register = async (user) => {
             date_created: new Date().toISOString(),
             created_by: 'Admin'
         };
-        
         return new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM users WHERE email = ?", user.email, function(error, userResult) {
+                if (error) reject(error);
+                if (userResult?.length) {
+                    reject("Email already taken");
+                }
+            });
             connection.query("INSERT INTO users SET ?", data, function(error, result) {
                 if (error) reject(error);
                 const jwtToken = generateToken(result?.insertId, user.email);
@@ -44,6 +51,7 @@ export const login = async (user) => {
                     const match = await bcrypt.compare(user.password, result?.[0]?.password);
                     if (match) {
                         const token = generateToken(result?.[0]?.id, user?.email);
+                        localStorage.setItem('token', token);
                         resolve({
                             token,
                             firstName: result?.[0]?.firstName,

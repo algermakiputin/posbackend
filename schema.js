@@ -124,7 +124,6 @@ export const typeDefs = `#graphql
         firstName: String!
         lastName: String!
         email: String!
-        username: String!
         password: String!
         confirmPassword: String!
     }
