@@ -44,6 +44,7 @@ export const register = async (user) => {
 };
 
 export const login = async (user) => {
+    console.log(`logging in`);
     if (user.email && user.password) {
         return new Promise((resolve, reject) => {
             connection.query("SELECT * FROM users WHERE email = ? LIMIT 1", user.email, async function(error, result) {
@@ -61,7 +62,8 @@ export const login = async (user) => {
                             id: result?.[0]?.id
                         })
                     } else {
-                        return new GraphQLError("Incorrect username or password");
+                        console.log(`password not match`);
+                        reject(error);
                     }
                 }
             });

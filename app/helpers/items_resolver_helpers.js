@@ -46,12 +46,22 @@ export const getItems = async (params) => {
 
 export const findItem = async (itemId) => {
     return new Promise((resolve, reject) => {
+        const query = `
+            SELECT items.*, supplier.name as supplierName, categories.name as categoryName 
+                FROM items
+                LEFT JOIN supplier 
+                    ON items.supplier_id = supplier.id
+                LEFT JOIN categories 
+                    ON categories.id = items.category_id
+                WHERE items.id = ?
+        `;
         connection.query({
-            sql: 'SELECT * FROM items WHERE id = ?',
+            sql: query,
             timeout: 40,
             values: [itemId]
         }, function(error, result) {
             if (error) reject(error);
+            console.log(`resultqweqwe`, result);
             resolve(result);
         });
     });
@@ -96,20 +106,6 @@ export const storeItem = async (item) => {
                 data: JSON.stringify(result)
             });
         });
-    });
-};
-
-export const getItem = (id) => {
-    return new Promise((resolve, reject) => {
-        const query = `SELECT * FROM items WHERE id = ?`;
-        connection.query({
-            sql: query, 
-            values: [id],
-        }, function(error, result) {
-            console.log(`result`, result);
-            if (error) reject(error);
-            resolve(result[0]);
-        })
     });
 };
 

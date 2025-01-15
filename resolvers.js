@@ -1,6 +1,6 @@
-import { getItems, findItem, storeItem, getItem, updateItem, destroyItem, getInventorySummary } from "./app/helpers/items_resolver_helpers.js";
+import { getItems, findItem, storeItem, updateItem, destroyItem, getInventorySummary } from "./app/helpers/items_resolver_helpers.js";
 import { destroySupplier, getSuppliers, storeSupplier } from "./app/helpers/supplier_resolver_helpers.js";
-import { getCategories, storeCategory, destroyCategory, updateCategory } from './app/helpers/categories_resolver_helpers.js';
+import { getCategories, storeCategory, destroyCategory, updateCategory, findCategory } from './app/helpers/categories_resolver_helpers.js';
 import { getSales, getSalesDetails, getSalesOverView, storeSales } from "./app/helpers/sales_resolver_helpers.js";
 import { register, login } from './app/helpers/users_resolver_helpers.js';
 export const resolvers = {
@@ -15,14 +15,14 @@ export const resolvers = {
         categories: async () => {  
             return await getCategories();
         },
+        category: async (root, args) => {
+            return await findCategory(args.id);
+        },
         suppliers: async () => {
             return await getSuppliers();
         },
         getSales: async () => {
             return await getSales("Last 30 Days");
-        },
-        item: async (root, args) => {
-            return await getItem(args.id);
         },
         inventorySummary: async (root, args) => {
             return await getInventorySummary(args);

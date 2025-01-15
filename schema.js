@@ -11,11 +11,12 @@ export const typeDefs = `#graphql
         capital: Float
         supplier_id: String
         category_id: String
+        image: String
     }
     type Category {
         id: ID,
         name: String,
-        description: String
+        itemCount: Int
     }
     type Supplier {
         id: ID,
@@ -87,6 +88,7 @@ export const typeDefs = `#graphql
         items(filter: ItemFilter): ItemsResponse
         item(id: ID): Item
         categories: [Category]
+        category(id: ID): Category
         suppliers: [Supplier]
         getSales(filter: String): SalesResponse
         inventorySummary: InventorySummaryResponse
@@ -144,7 +146,7 @@ export const typeDefs = `#graphql
         destroyItem(id: ID!): GenericRepose
         storeCategory(category: CategoryInput): GenericRepose
         destroyCategory(id: ID!): GenericRepose
-        updateCategory(category: CategoryInput): Boolean
+        updateCategory(category: CategoryInput): GenericRepose
         storeSupplier(supplier: SupplierInput): GenericRepose
         storeSales(sales: SalesInput): GenericRepose
         destroySupplier(id: ID!): GenericRepose

@@ -17,8 +17,8 @@ export const context =  async ({req, res}) => {
     if (req.body.operationName === "Login" || req.body.operationName === "Register") {
         return {};
     }
-    const token = req.header.authorization || localStorage.getItem('token');
-    const user = await getUser(token);
-    if (!user) throw new GraphQLError("User is not Authenticated");
-    return { user };
+    // const token = req.headers.authorization;
+    // const user = await getUser(token);
+    // if (!user) throw new GraphQLError("User is not Authenticated");
+    // return { user };
 }

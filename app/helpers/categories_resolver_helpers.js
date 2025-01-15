@@ -2,8 +2,15 @@ import connection from "../config/database.js";
 
 export const getCategories = async () => {
     return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM categories ORDER BY id DESC", function(error, result, fields) {
+        const query = `
+            SELECT categories.*, COUNT(items.id) FROM categories
+                LEFT JOIN items
+                    ON items.category_id = categories.id
+                GROUP BY categories.id
+        `;
+        connection.query(query, function(error, result) {
             if (error) reject(error);
+            console.log(`result` , result);
             resolve(result);
         });
     });
@@ -49,3 +56,12 @@ export const updateCategory = async (category) => {
         })
     });
 }
+
+export const findCategory = async (id) => {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT * FROM categories WHERE id = ?", id, function(error, result) {
+            if (error) reject(error);
+            resolve(result[0]);
+        }); 
+    });
+};
