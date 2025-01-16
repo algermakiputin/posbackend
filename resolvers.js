@@ -1,5 +1,5 @@
 import { getItems, findItem, storeItem, updateItem, destroyItem, getInventorySummary } from "./app/helpers/items_resolver_helpers.js";
-import { destroySupplier, getSuppliers, storeSupplier } from "./app/helpers/supplier_resolver_helpers.js";
+import { destroySupplier, getSuppliers, storeSupplier, findSupplier, updateSupplier } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories, storeCategory, destroyCategory, updateCategory, findCategory } from './app/helpers/categories_resolver_helpers.js';
 import { getSales, getSalesDetails, getSalesOverView, storeSales } from "./app/helpers/sales_resolver_helpers.js";
 import { register, login } from './app/helpers/users_resolver_helpers.js';
@@ -21,6 +21,10 @@ export const resolvers = {
         suppliers: async () => {
             return await getSuppliers();
         },
+        supplier: async (root, args) => {
+            console.log(`args`, args);
+            return await findSupplier(args.id);
+        },  
         getSales: async () => {
             return await getSales("Last 30 Days");
         },
@@ -64,6 +68,11 @@ export const resolvers = {
         },
         storeSupplier: async(root, args) => {
             return await storeSupplier(args?.supplier);
+        },
+        updateSupplier: async(root, args) => {
+            const id = args.supplier.id;
+            delete args.supplier.id;
+            return await updateSupplier(args.supplier, id)
         },
         register: async(root, args) => {
             return await register(args.user);

@@ -22,7 +22,7 @@ export const typeDefs = `#graphql
         id: ID,
         name: String,
         address: String,
-        phone: String,
+        contact: String,
         email: String
     }
     input ItemFilter {
@@ -46,9 +46,6 @@ export const typeDefs = `#graphql
         category_id: String
         supplier_id: String
         image: String
-    }
-    input SupplierInput {
-        name: String,
     }
     type ItemsResponse {
         data: [Item]
@@ -90,6 +87,7 @@ export const typeDefs = `#graphql
         categories: [Category]
         category(id: ID): Category
         suppliers: [Supplier]
+        supplier(id: ID): Supplier
         getSales(filter: String): SalesResponse
         inventorySummary: InventorySummaryResponse
         getSalesOverview: SalesOverViewResponse
@@ -122,6 +120,13 @@ export const typeDefs = `#graphql
         address: String
         email: String
     }
+    input SupplierUpdateInput {
+        name: String
+        contact: String
+        address: String
+        email: String
+        id: ID
+    }
     input UserInput {
         firstName: String!
         lastName: String!
@@ -148,6 +153,7 @@ export const typeDefs = `#graphql
         destroyCategory(id: ID!): GenericRepose
         updateCategory(category: CategoryInput): GenericRepose
         storeSupplier(supplier: SupplierInput): GenericRepose
+        updateSupplier(supplier: SupplierUpdateInput): GenericRepose
         storeSales(sales: SalesInput): GenericRepose
         destroySupplier(id: ID!): GenericRepose
         register(user: UserInput): User

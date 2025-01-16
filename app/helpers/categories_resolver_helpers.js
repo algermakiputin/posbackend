@@ -7,6 +7,7 @@ export const getCategories = async () => {
                 LEFT JOIN items
                     ON items.category_id = categories.id
                 GROUP BY categories.id
+                ORDER BY categories.id DESC
         `;
         connection.query(query, function(error, result) {
             if (error) reject(error);
