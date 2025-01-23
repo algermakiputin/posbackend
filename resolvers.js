@@ -2,7 +2,7 @@ import { getItems, findItem, storeItem, updateItem, destroyItem, getInventorySum
 import { destroySupplier, getSuppliers, storeSupplier, findSupplier, updateSupplier } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories, storeCategory, destroyCategory, updateCategory, findCategory } from './app/helpers/categories_resolver_helpers.js';
 import { getSales, getSalesDetails, getSalesOverView, storeSales } from "./app/helpers/sales_resolver_helpers.js";
-import { register, login, getUsers, findUser } from './app/helpers/users_resolver_helpers.js';
+import { register, login, getUsers, findUser, updateUser, destroyUser } from './app/helpers/users_resolver_helpers.js';
 
 export const resolvers = {
     Query: {
@@ -87,6 +87,12 @@ export const resolvers = {
         login: async(root, args, context) => {
             console.log(`context`, context);
             return await login(args.user)
+        },
+        updateUser: async(root, args) => {
+            return await updateUser(args.user);
+        },
+        destroyUser: async(root, args) => {
+            return await destroyUser(args.id);
         }
     }
 }

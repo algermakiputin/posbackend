@@ -149,6 +149,14 @@ export const typeDefs = `#graphql
         email: String
         password: String
     }
+    input UpdateUserInput {
+        firstName: String
+        lastName: String
+        email: String
+        password: String
+        confirmPassword: String
+        id: ID!
+    }
     type Mutation {
         storeItem(item: ItemInput!): GenericRepose
         updateItem(editItemInput: EditItemInput): GenericRepose
@@ -162,6 +170,8 @@ export const typeDefs = `#graphql
         destroySupplier(id: ID!): GenericRepose
         register(user: UserInput): User
         login(user: LoginInput): User
+        updateUser(user: UpdateUserInput): GenericRepose
+        destroyUser(id: ID): GenericRepose
     }
     input EditItemInput {
         id: ID!

@@ -89,6 +89,37 @@ export const findUser = async (userId) => {
     });
 }
 
+export const updateUser = async (user) => {
+    if (user?.password && user?.confirmPassword) {
+        const hashPassword = await bcrypt.hash(user.password, 12);
+        user.password = hashPassword;
+        delete user.confirmPassword;
+    }
+    return new Promise((resolve, reject) => {
+        const id = user.id;
+        delete user.id;
+        connection.query("UPDATE users SET ? WHERE id = ?", [user, id], function(error, result) {
+            if (error) reject(error);
+            resolve({
+                success: true,
+                data: JSON.stringify(result)
+            });
+        });
+    });
+}
+
+export const destroyUser = async (id) => {
+    return new Promise((resolve, reject) => {
+        connection.query("DELETE FROM users WHERE id = ?", id, function(error, result) {
+            if (error) reject(error);
+            resolve({
+                success: true, 
+                data: JSON.stringify(result)
+            })
+        })
+    }); 
+};  
+
 const generateToken = (id, user) => {
     return jsonwebtoken.sign({
         id,
