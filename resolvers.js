@@ -2,7 +2,8 @@ import { getItems, findItem, storeItem, updateItem, destroyItem, getInventorySum
 import { destroySupplier, getSuppliers, storeSupplier, findSupplier, updateSupplier } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories, storeCategory, destroyCategory, updateCategory, findCategory } from './app/helpers/categories_resolver_helpers.js';
 import { getSales, getSalesDetails, getSalesOverView, storeSales } from "./app/helpers/sales_resolver_helpers.js";
-import { register, login } from './app/helpers/users_resolver_helpers.js';
+import { register, login, getUsers, findUser } from './app/helpers/users_resolver_helpers.js';
+
 export const resolvers = {
     Query: {
         items: async (root, args) => {
@@ -37,6 +38,12 @@ export const resolvers = {
         getSalesDetails: async (root, args) => {
             console.log(`args`, args);
             return await getSalesDetails(args.transaction_number);
+        },
+        getUsers: async(root, args) => {
+            return await getUsers(args.adminId);
+        },
+        user: async(root, args) => {
+            return await findUser(args.userId);
         }
     },
     Mutation: {

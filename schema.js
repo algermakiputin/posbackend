@@ -92,6 +92,8 @@ export const typeDefs = `#graphql
         inventorySummary: InventorySummaryResponse
         getSalesOverview: SalesOverViewResponse
         getSalesDetails(transaction_number: String): [SalesDetails]
+        getUsers(adminId: ID): [User]
+        user(userId: ID): User
     }
     type GenericRepose {
         success: Boolean,
@@ -133,6 +135,8 @@ export const typeDefs = `#graphql
         email: String!
         password: String!
         confirmPassword: String!
+        staff: ID
+        admin_id: ID
     }
     type User {
         id: String

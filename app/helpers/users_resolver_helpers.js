@@ -13,22 +13,22 @@ export const register = async (user) => {
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
-            account_type: 'Admin',
+            account_type: user?.staff ? 'Staff' : 'Admin',
             password: hashPassword,
             date_created: new Date().toISOString(),
-            created_by: 'Admin'
+            created_by: 'Admin',
+            admin_id: user?.admin_id
         };
         return new Promise((resolve, reject) => {
             connection.query("SELECT * FROM users WHERE email = ?", user.email, function(error, userResult) {
                 if (error) reject(error);
                 if (userResult?.length) {
-                    reject("Email already taken");
+                    reject(new GraphQLError("Email already exist", {arguments : {code: 400}}));
                 }
             });
             connection.query("INSERT INTO users SET ?", data, function(error, result) {
                 if (error) reject(error);
                 const jwtToken = generateToken(result?.insertId, user);
-                console.log(`jwt token`, jwtToken);
                 resolve({
                     token: jwtToken,
                     firstName: user.firstName,
@@ -69,6 +69,24 @@ export const login = async (user) => {
             });
         });
     }
+}
+
+export const getUsers = async (adminId) => {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT * FROM users WHERE admin_id = ?", adminId, function(error, result) {
+            if (error) reject(error);
+            resolve(result);
+        });
+    });
+}
+
+export const findUser = async (userId) => {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT * FROM users WHERE id = ?", userId, function(error, result) {
+            if (error) reject(error);
+            resolve(result?.length ? result[0] : []);
+        });
+    });
 }
 
 const generateToken = (id, user) => {
