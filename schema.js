@@ -14,22 +14,23 @@ export const typeDefs = `#graphql
         image: String
     }
     type Category {
-        id: ID,
-        name: String,
+        id: ID
+        name: String
         itemCount: Int
     }
     type Supplier {
-        id: ID,
-        name: String,
-        address: String,
-        contact: String,
+        id: ID
+        name: String
+        address: String
+        contact: String
         email: String
     }
     input ItemFilter {
-        query: String,
+        query: String
         categories: [String]
         suppliers: [String]
         limit: Int
+        storeId: ID
     }
     input CategoryInput {
         name: String,

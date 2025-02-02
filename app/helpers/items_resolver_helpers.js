@@ -3,6 +3,10 @@ import connection from "../config/database.js";
 export const getItems = async (params) => {
     console.log(`params`, params);
     return new Promise((resolve, reject) => {
+        let values = [
+            `%${params?.filter?.query || ''}%`, 
+            params?.filter?.storeId
+        ];
         var sqlQuery = `
             SELECT items.*, supplier.name as supplierName, categories.name as categoryName, categories.id as stocks
                 FROM items
@@ -11,25 +15,25 @@ export const getItems = async (params) => {
                 LEFT JOIN categories 
                     ON categories.id = items.category_id
                 WHERE items.name LIKE ? 
+                AND items.store_id = ?
         `;
         if (params?.filter?.categories?.length) {
-            sqlQuery = sqlQuery.concat(" AND category_id IN (?)")
+            sqlQuery = sqlQuery.concat(" AND category_id IN (?)");
+            values.push(params?.filter?.categories);
         } 
 
         if (params?.filter?.suppliers?.length) {
-            sqlQuery = sqlQuery.concat(" AND supplier_id IN (?)")
+            sqlQuery = sqlQuery.concat(" AND supplier_id IN (?)");
+            values.push(params?.filter?.suppliers)
         }
 
-        sqlQuery = sqlQuery.concat(` ORDER BY items.id DESC LIMIT ${params?.filter?.limit} OFFSET 0`);
-        connection.query("SELECT COUNT(id) as total_rows FROM items", function(countError, countResult) {
+        sqlQuery = sqlQuery.concat(` ORDER BY items.id DESC LIMIT ? OFFSET 0`);
+        values.push(params?.filter?.limit);
+        connection.query("SELECT COUNT(id) as total_rows FROM items WHERE store_id = ?", params?.filter?.storeId ,function(countError, countResult) {
             if (countError) reject(countError);
             connection.query({
                 sql: sqlQuery,
-                values: [
-                    `%${params?.filter?.query || ''}%`, 
-                    params?.filter?.categories,
-                    params?.filter?.suppliers,
-                ],
+                values: values,
                 timeout: 60
             }, function(error, result, fields) {
                 if (error) reject(error);
