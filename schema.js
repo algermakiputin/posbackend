@@ -144,6 +144,7 @@ export const typeDefs = `#graphql
         token: String
         firstName: String
         lastName: String
+        storeId: ID
     }
     input LoginInput {
         email: String

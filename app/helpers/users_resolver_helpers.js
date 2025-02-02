@@ -9,6 +9,7 @@ global.localStorage = new LocalStorage('./scratch');
 export const register = async (user) => {
     if (user.password == user.confirmPassword) {
         const hashPassword = await bcrypt.hash(user.password, 12);
+        const isAdmin = !user?.staff;
         const data = {
             email: user.email,
             firstName: user.firstName,
@@ -20,23 +21,49 @@ export const register = async (user) => {
             admin_id: user?.admin_id
         };
         return new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM users WHERE email = ?", user.email, function(error, userResult) {
-                if (error) reject(error);
-                if (userResult?.length) {
-                    reject(new GraphQLError("Email already exist", {arguments : {code: 400}}));
-                }
-            });
-            connection.query("INSERT INTO users SET ?", data, function(error, result) {
-                if (error) reject(error);
-                const jwtToken = generateToken(result?.insertId, user);
-                resolve({
-                    token: jwtToken,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    id: result?.insertId
+            connection.beginTransaction(function(transactionError) {
+                if (transactionError) reject(transactionError);
+                connection.query("SELECT * FROM users WHERE email = ?", user.email, function(error, userResult) {
+                    if (error) reject(error);
+                    if (userResult?.length) {
+                        reject(new GraphQLError("Email already exist", {arguments : {code: 400}}));
+                    }
                 });
-            }); 
+                connection.query("INSERT INTO users SET ?", data, function(error, result) {
+                    if (error) reject(error);
+                    const jwtToken = generateToken(result?.insertId, user);
+                    const store = {
+                        user_id: result?.insertId,
+                        name: data.firstName
+                    }
+                    if (isAdmin) {
+                        connection.query("INSERT INTO stores SET ?", store, function(error, result) {
+                            if (error) {
+                                connection.rollback(function(err) {
+                                    reject(error);
+                                });
+                            };
+                            connection.commit();
+                            resolve({
+                                token: jwtToken,
+                                firstName: user.firstName,
+                                lastName: user.lastName,
+                                email: user.email,
+                                id: result?.insertId
+                            });
+                        });
+                    } else {
+                        resolve({
+                            token: jwtToken,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            email: user.email,
+                            id: result?.insertId
+                        });
+                    }
+                    
+                });
+            });
         });
     } else {
         throw new Error("Password and confirm password does not match");
@@ -52,15 +79,22 @@ export const login = async (user) => {
                 if (result?.length) {
                     const match = await bcrypt.compare(user.password, result?.[0]?.password);
                     if (match) {
-                        const token = generateToken(result?.[0]?.id, result?.[0]);
-                        localStorage.setItem('token', token);
-                        resolve({
-                            token,
-                            firstName: result?.[0]?.firstName,
-                            lastName: result?.[0]?.lastName,
-                            email: result?.[0]?.email,
-                            id: result?.[0]?.id
-                        })
+                        const userResult = result?.[0];
+                        const userId = userResult?.account_type === "Admin" ? userResult?.id : userResult?.admin_id;
+                        connection.query("SELECT id FROM stores WHERE user_id = ?", userId, function(error, storeResult){
+                            if (error) reject(error);
+                            const token = generateToken(userResult?.id, userResult);
+                            localStorage.setItem('token', token);
+                            const response = {
+                                token,
+                                firstName: userResult?.firstName,
+                                lastName: userResult?.lastName,
+                                email: userResult?.email,
+                                id: userResult?.id,
+                                storeId: storeResult?.[0]?.id
+                            };
+                            resolve(response);
+                        });
                     } else {
                         console.log(`password not match`);
                         reject(error);

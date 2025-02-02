@@ -35,7 +35,7 @@ export const getItems = async (params) => {
                 if (error) reject(error);
                 resolve({
                     data: result,
-                    count: countResult[0]?.total_rows
+                    count: countResult?.[0]?.total_rows
                 });
             });
         });
