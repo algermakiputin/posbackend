@@ -26,7 +26,6 @@ export const getItems = async (params) => {
             sqlQuery = sqlQuery.concat(" AND supplier_id IN (?)");
             values.push(params?.filter?.suppliers)
         }
-
         sqlQuery = sqlQuery.concat(` ORDER BY items.id DESC LIMIT ? OFFSET 0`);
         values.push(params?.filter?.limit);
         connection.query("SELECT COUNT(id) as total_rows FROM items WHERE store_id = ?", params?.filter?.storeId ,function(countError, countResult) {

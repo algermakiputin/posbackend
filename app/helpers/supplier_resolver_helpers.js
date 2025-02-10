@@ -1,8 +1,8 @@
 import connection from "../config/database.js";
 
-export const getSuppliers = async () => {
+export const getSuppliers = async (storeId) => {
     return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM supplier ORDER BY id DESC", function(error, result) {
+        connection.query("SELECT * FROM supplier WHERE store_id = ? ORDER BY id DESC", storeId, function(error, result) {
             if (error) reject(error);
             resolve(result);
         })
@@ -22,6 +22,7 @@ export const destroySupplier = async (id) => {
 }
 
 export const storeSupplier = async (supplier) => {
+    console.log(`supplier`,supplier);
     return new Promise((resolve, reject) => {
         connection.query("INSERT INTO supplier SET ?", supplier, function(error, result) {
             if (error) reject(error);

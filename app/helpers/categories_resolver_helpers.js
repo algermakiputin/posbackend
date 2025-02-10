@@ -1,15 +1,17 @@
 import connection from "../config/database.js";
 
-export const getCategories = async () => {
+export const getCategories = async (storeId) => {
     return new Promise((resolve, reject) => {
         const query = `
-            SELECT categories.*, COUNT(items.id) FROM categories
+            SELECT categories.name, categories.id, COUNT(items.id) as itemCount FROM categories
                 LEFT JOIN items
                     ON items.category_id = categories.id
+                WHERE categories.store_id = ?
                 GROUP BY categories.id
                 ORDER BY categories.id DESC
         `;
-        connection.query(query, function(error, result) {
+        connection.query(query, storeId, function(error, result) {
+            console.log(`result`,result);
             if (error) reject(error);
             console.log(`result` , result);
             resolve(result);
@@ -19,7 +21,12 @@ export const getCategories = async () => {
 
 export const storeCategory = async (params) => {
     return new Promise((resolve, reject) => {
-        connection.query("INSERT INTO categories SET ?", {name: params.name, active: 1}, function(error, result) {
+        const category = {
+            name: params.name, 
+            active: 1,
+            store_id: params.store_id
+        };
+        connection.query("INSERT INTO categories SET ?", category, function(error, result) {
             if (error) reject(error);
             resolve({
                 success: true,

@@ -36,6 +36,7 @@ export const typeDefs = `#graphql
         name: String,
         description: String
         id: ID
+        store_id: ID
     }
     input ItemInput {
         barcode: String
@@ -85,9 +86,9 @@ export const typeDefs = `#graphql
     type Query {
         items(filter: ItemFilter): ItemsResponse
         item(id: ID): Item
-        categories: [Category]
+        categories(storeId: ID): [Category]
         category(id: ID): Category
-        suppliers: [Supplier]
+        suppliers(storeId: ID): [Supplier]
         supplier(id: ID): Supplier
         getSales(filter: String): SalesResponse
         inventorySummary: InventorySummaryResponse
@@ -122,6 +123,7 @@ export const typeDefs = `#graphql
         contact: String
         address: String
         email: String
+        store_id: ID
     }
     input SupplierUpdateInput {
         name: String

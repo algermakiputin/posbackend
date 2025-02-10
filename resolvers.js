@@ -13,14 +13,14 @@ export const resolvers = {
             const item = await findItem(args?.id);
             return item[0];
         },
-        categories: async () => {  
-            return await getCategories();
+        categories: async (_, args) => {  
+            return await getCategories(args.storeId);
         },
         category: async (root, args) => {
             return await findCategory(args.id);
         },
-        suppliers: async () => {
-            return await getSuppliers();
+        suppliers: async (_, args) => {
+            return await getSuppliers(args?.storeId);
         },
         supplier: async (root, args) => {
             console.log(`args`, args);
