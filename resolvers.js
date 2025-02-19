@@ -60,8 +60,7 @@ export const resolvers = {
             return await storeItem(args.item);
         },
         storeSales: async (root, args) => {
-            console.log(`args`, args);
-            return await storeSales(args?.sales?.cart);
+            return await storeSales(args?.sales);
         },
         updateItem: async (root, args) => {
             return await updateItem(args?.editItemInput);

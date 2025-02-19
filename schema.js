@@ -48,6 +48,7 @@ export const typeDefs = `#graphql
         category_id: String
         supplier_id: String
         image: String
+        storeId: String
     }
     type ItemsResponse {
         data: [Item]
@@ -83,6 +84,10 @@ export const typeDefs = `#graphql
         quantity: Int
         created_at: String
     }
+    input getSalesInput {
+        dateRange: String
+        storeId: ID
+    }
     type Query {
         items(filter: ItemFilter): ItemsResponse
         item(id: ID): Item
@@ -90,7 +95,7 @@ export const typeDefs = `#graphql
         category(id: ID): Category
         suppliers(storeId: ID): [Supplier]
         supplier(id: ID): Supplier
-        getSales(filter: String): SalesResponse
+        getSales(filter: getSalesInput): SalesResponse
         inventorySummary: InventorySummaryResponse
         getSalesOverview: SalesOverViewResponse
         getSalesDetails(transaction_number: String): [SalesDetails]
@@ -106,6 +111,7 @@ export const typeDefs = `#graphql
         cart: Cart
         customerId: Int
         customerName: String
+        storeId: ID
     }
     input Cart {
         lineItems: [lineItem]

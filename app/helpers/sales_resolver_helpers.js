@@ -2,7 +2,6 @@ import connection from "../config/database.js";
 import * as dateFns from 'date-fns';
 
 export const storeSales = (args) => {
-    console.log(`args`, args);
     return new Promise((resolve, reject) => {
         connection.beginTransaction(function(error) {
             if (error) {
@@ -18,7 +17,8 @@ export const storeSales = (args) => {
                     transaction_number: transaction_number,
                     user_id: 6,
                     customer_id: args?.customerId,
-                    date_time: formatDate(new Date, "yyyy-MM-dd hh:mm")
+                    date_time: formatDate(new Date, "yyyy-MM-dd hh:mm"),
+                    store_id: args?.storeId
                 }
                 connection.query("INSERT INTO sales SET ?", salesData , function(error, sales_result) {
                     if (error) {
@@ -27,7 +27,7 @@ export const storeSales = (args) => {
                         })
                     } 
                     const salesId = parseInt(sales_result?.insertId);
-                    const lineItems = args?.lineItems.map((lineItem) => {
+                    const lineItems = args?.cart?.lineItems.map((lineItem) => {
                         return [
                             salesId,
                             1,
@@ -42,11 +42,12 @@ export const storeSales = (args) => {
                             '',
                             0,
                             formatDate(new Date, "yyyy-MM-dd hh:mm"),
-                            transaction_number
+                            transaction_number,
+                            args?.storeId
                         ];
                     });
                     console.log(`values`, lineItems);
-                    connection.query("INSERT INTO sales_description (sales_id, item_id, name, price, quantity, barcode, capital, discount, profit, user_id, staff, returned, created_at, transaction_number) VALUES ?", [lineItems], function(error, result) {
+                    connection.query("INSERT INTO sales_description (sales_id, item_id, name, price, quantity, barcode, capital, discount, profit, user_id, staff, returned, created_at, transaction_number, store_id) VALUES ?", [lineItems], function(error, result) {
                         if (error) {
                             return connection.rollback(function() {
                                 reject(`error`, error);
@@ -71,22 +72,23 @@ export const storeSales = (args) => {
 export const getSales = (filter) => {
     const today = formatDate(new Date, "yyyy-MM-dd");
     var from;
-    if (filter === "Today") {
+    if (filter?.dateRange === "Today") {
         from = formatDate(new Date, "yyyy-MM-dd");
-    } else if (filter === "Last 7 Days") {
+    } else if (filter?.dateRange === "Last 7 Days") {
         from = formatDate(dateFns.subDays(new Date, 7), "yyyy-MM-dd");
-    } else if (filter === "Last 30 Days") {
+    } else if (filter?.dateRange === "Last 30 Days") {
         from = formatDate(dateFns.subDays(new Date, 30), "yyyy-MM-dd");
     }
 
     const salesQuery = `
         SELECT SUM(price * quantity) as totalEarnings, SUM(quantity) as itemSold, SUM((price - capital) * quantity) as netSales
             FROM sales_description
-            WHERE DATE_FORMAT(created_at, '%Y-%m-%d') BETWEEN '${from}' AND '${today}'
+            WHERE DATE_FORMAT(created_at, '%Y-%m-%d') BETWEEN ? AND ?
+            AND store_id = ?
     `;
 
     return new Promise((resolve, reject) => {
-        connection.query(salesQuery, function(error, salesQueryResult) {
+        connection.query(salesQuery, [from, today, filter.storeId], function(error, salesQueryResult) {
             if (error) reject(error);
             const sales_description_query = `
                 SELECT sales.transaction_number, sales.customer_name, SUM(sales_description.quantity) as totalItems, SUM(sales_description.price * sales_description.quantity) as total, sales.date_time
