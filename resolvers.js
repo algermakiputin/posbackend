@@ -26,8 +26,8 @@ export const resolvers = {
             console.log(`args`, args);
             return await findSupplier(args.id);
         },  
-        getSales: async () => {
-            return await getSales("Last 30 Days");
+        getSales: async (_, args) => {
+            return await getSales(args.filter);
         },
         inventorySummary: async (root, args) => {
             return await getInventorySummary(args);

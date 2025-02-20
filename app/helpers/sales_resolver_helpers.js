@@ -64,19 +64,19 @@ export const storeSales = (args) => {
                     });
                 });
             });
-            
         });
     })
 }
 
 export const getSales = (filter) => {
     const today = formatDate(new Date, "yyyy-MM-dd");
-    var from;
-    if (filter?.dateRange === "Today") {
+    const span = filter?.dateRange ? filter?.dateRange : "Last 7 Days";
+    var from = "";
+    if (span === "Today") {
         from = formatDate(new Date, "yyyy-MM-dd");
-    } else if (filter?.dateRange === "Last 7 Days") {
+    } else if (span === "Last 7 Days") {
         from = formatDate(dateFns.subDays(new Date, 7), "yyyy-MM-dd");
-    } else if (filter?.dateRange === "Last 30 Days") {
+    } else if (span === "Last 30 Days") {
         from = formatDate(dateFns.subDays(new Date, 30), "yyyy-MM-dd");
     }
 
@@ -101,7 +101,6 @@ export const getSales = (filter) => {
             `;
             connection.query(sales_description_query, function(error, result) {
                 if (error) reject(error);
-                console.log(`the result`, result);
                 resolve({
                     ...salesQueryResult?.[0],
                     transactions: result
@@ -165,7 +164,6 @@ const generateTransactionNumber = (lastId) => {
     const suffix = "TRX";
     const digits = 8;
     const remainingDigits = digits - lastId.toString().length;
-
     const transaction_number = suffix + ("0".repeat(remainingDigits) + lastId.toString());
     return transaction_number;
 }
