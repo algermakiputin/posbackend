@@ -61,7 +61,6 @@ export const register = async (user) => {
                             id: result?.insertId
                         });
                     }
-                    
                 });
             });
         });

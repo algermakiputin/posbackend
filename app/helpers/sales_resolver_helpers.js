@@ -74,6 +74,8 @@ export const getSales = (filter) => {
     var from = "";
     if (span === "Today") {
         from = formatDate(new Date, "yyyy-MM-dd");
+    } else if (span === "Yesterday") {
+        from = formatDate(dateFns.subDays(new Date, 1), "yyyy-MM-dd");
     } else if (span === "Last 7 Days") {
         from = formatDate(dateFns.subDays(new Date, 7), "yyyy-MM-dd");
     } else if (span === "Last 30 Days") {
