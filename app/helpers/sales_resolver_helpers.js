@@ -69,6 +69,7 @@ export const storeSales = (args) => {
 }
 
 export const getSales = (filter) => {
+    console.log(`filter`, filter);
     const today = formatDate(new Date, "yyyy-MM-dd");
     const span = filter?.dateRange ? filter?.dateRange : "Last 7 Days";
     var from = "";
@@ -96,12 +97,13 @@ export const getSales = (filter) => {
                 SELECT sales.transaction_number, sales.customer_name, SUM(sales_description.quantity) as totalItems, SUM(sales_description.price * sales_description.quantity) as total, sales.date_time
                     FROM sales 
                     INNER JOIN sales_description ON sales_description.sales_id = sales.id
-                    WHERE DATE_FORMAT(sales_description.created_at, '%Y-%m-%d') BETWEEN '${from}' AND '${today}' 
+                    WHERE DATE_FORMAT(sales_description.created_at, '%Y-%m-%d') BETWEEN '${from}' AND '${today}'
+                    AND sales_description.store_id = ?
                     GROUP BY sales.id
                     ORDER BY sales.id DESC
                     LIMIT 10
             `;
-            connection.query(sales_description_query, function(error, result) {
+            connection.query(sales_description_query, filter?.storeId, function(error, result) {
                 if (error) reject(error);
                 resolve({
                     ...salesQueryResult?.[0],
@@ -112,7 +114,7 @@ export const getSales = (filter) => {
     })
 }
 
-export const getSalesOverView = () => {
+export const getSalesOverView = (args) => {
     const today = new Date();
     const from = dateFns.subMonths(today, 11);
     const format = "yyyy-MM-dd";
@@ -126,9 +128,10 @@ export const getSalesOverView = () => {
     return new Promise((resolve, reject) => {
         const query = `
             SELECT * FROM sales_description 
-	            WHERE DATE_FORMAT(created_at, '%Y-%m-%d') BETWEEN "${formatDate(from, format)}" AND "${formatDate(today, format)}"
+                WHERE DATE_FORMAT(created_at, '%Y-%m-%d') BETWEEN "${formatDate(from, format)}" AND "${formatDate(today, format)}"
+                AND store_id = ?
         `;
-        connection.query(query, function(error, result) {
+        connection.query(query, args.storeId, function(error, result) {
             if (error) reject(error);
             if (result?.length) {
                 result?.forEach((sale) => {

@@ -114,13 +114,14 @@ export const storeItem = async (item) => {
     });
 };
 
-export const getInventorySummary = () => {
+export const getInventorySummary = (args) => {
     return new Promise((resolve, reject) => {
         const query = `
             SELECT COUNT(id) as totalItems, COUNT(DISTINCT category_id) as category_count, SUM(price * stocks) as totalValue, SUM(stocks * capital) as capital
                 FROM items
+                WHERE store_id = ?
         `
-        connection.query(query, function(error, result) {
+        connection.query(query,args.storeId, function(error, result) {
             if (error) reject(error);
             resolve({
                 totalItems: result?.[0]?.totalItems,

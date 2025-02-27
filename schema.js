@@ -96,8 +96,8 @@ export const typeDefs = `#graphql
         suppliers(storeId: ID): [Supplier]
         supplier(id: ID): Supplier
         getSales(filter: getSalesInput): SalesResponse
-        inventorySummary: InventorySummaryResponse
-        getSalesOverview: SalesOverViewResponse
+        inventorySummary(storeId: ID): InventorySummaryResponse
+        getSalesOverview(storeId: ID): SalesOverViewResponse
         getSalesDetails(transaction_number: String): [SalesDetails]
         getUsers(adminId: ID): [User]
         user(userId: ID): User

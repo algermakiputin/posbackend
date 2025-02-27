@@ -91,6 +91,7 @@ export const resolvers = {
             return await updateUser(args.user);
         },
         destroyUser: async(root, args) => {
+            console.log(`delete user args`, args);
             return await destroyUser(args.id);
         }
     }
