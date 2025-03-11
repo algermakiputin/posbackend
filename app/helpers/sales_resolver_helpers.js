@@ -115,6 +115,7 @@ export const getSales = (filter) => {
 }
 
 export const getSalesOverView = (args) => {
+    console.log(`getting sales overview`, args);
     const today = new Date();
     const from = dateFns.subMonths(today, 11);
     const format = "yyyy-MM-dd";
@@ -125,6 +126,8 @@ export const getSalesOverView = (args) => {
         data[formatDate(dateKey, keyFormat)] = 0;
     }
     data[formatDate(today, keyFormat)] = 0;
+    console.log(`today`, today);
+    console.log(`from`, from);
     return new Promise((resolve, reject) => {
         const query = `
             SELECT * FROM sales_description 

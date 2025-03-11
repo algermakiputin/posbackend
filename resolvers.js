@@ -1,4 +1,4 @@
-import { getItems, findItem, storeItem, updateItem, destroyItem, getInventorySummary } from "./app/helpers/items_resolver_helpers.js";
+import { getItems, findItem, storeItem, updateItem, destroyItem, getInventorySummary, addStocks } from "./app/helpers/items_resolver_helpers.js";
 import { destroySupplier, getSuppliers, storeSupplier, findSupplier, updateSupplier } from "./app/helpers/supplier_resolver_helpers.js";
 import { getCategories, storeCategory, destroyCategory, updateCategory, findCategory } from './app/helpers/categories_resolver_helpers.js';
 import { getSales, getSalesDetails, getSalesOverView, storeSales } from "./app/helpers/sales_resolver_helpers.js";
@@ -93,6 +93,11 @@ export const resolvers = {
         destroyUser: async(root, args) => {
             console.log(`delete user args`, args);
             return await destroyUser(args.id);
+        },
+        addStocks: async(root, args) => {
+            console.log(`args`, args);
+            const { stocks, id } = args.item ?? {};
+            return await addStocks(stocks, id);
         }
     }
 }

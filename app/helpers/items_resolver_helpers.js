@@ -132,3 +132,19 @@ export const getInventorySummary = (args) => {
         });
     });
 }
+
+export const addStocks = (stocks, id) => {
+    console.log(`stocks`, stocks);
+    console.log(`id`, id);
+    return new Promise((resolve, reject) => {
+        const query = "UPDATE items SET stocks = stocks + ? WHERE id = ?";
+        connection.query(query, [stocks, id], function(error, result) {
+            if (error) reject(error);
+            console.log(`sql`, result.sql);
+            resolve({
+                success: true,
+                message: JSON.stringify(result)
+            });
+        })
+    });
+}

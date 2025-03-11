@@ -182,6 +182,11 @@ export const typeDefs = `#graphql
         login(user: LoginInput): User
         updateUser(user: UpdateUserInput): GenericRepose
         destroyUser(id: ID): GenericRepose
+        addStocks(item: AddStocksInput): GenericRepose
+    }
+    input AddStocksInput {
+        id: ID,
+        stocks: Int
     }
     input EditItemInput {
         id: ID!
