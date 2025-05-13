@@ -70,7 +70,6 @@ export const register = async (user) => {
 };
 
 export const login = async (user) => {
-    console.log(`logging in`);
     if (user.email && user.password) {
         return new Promise((resolve, reject) => {
             connection.query("SELECT * FROM users WHERE email = ? LIMIT 1", user.email, async function(error, result) {
@@ -90,13 +89,19 @@ export const login = async (user) => {
                                 lastName: userResult?.lastName,
                                 email: userResult?.email,
                                 id: userResult?.id,
-                                storeId: storeResult?.[0]?.id
+                                storeId: storeResult?.[0]?.id,
+                                accountType: userResult?.account_type
                             };
-                            resolve(response);
+                            resolve({
+                                success: true,
+                                data: response
+                            });
                         });
                     } else {
-                        console.log(`password not match`);
-                        reject(error);
+                        resolve({
+                            success: false,
+                            message: 'Username and password does not match'
+                        });
                     }
                 }
             });

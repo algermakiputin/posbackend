@@ -1,14 +1,13 @@
 import connection from "../config/database.js";
 
 export const getItems = async (params) => {
-    console.log(`params`, params);
     return new Promise((resolve, reject) => {
         let values = [
             `%${params?.filter?.query || ''}%`, 
             params?.filter?.storeId
         ];
         var sqlQuery = `
-            SELECT items.*, supplier.name as supplierName, categories.name as categoryName, categories.id as stocks
+            SELECT items.*, supplier.name as supplierName, categories.name as categoryName, categories.id as categoryId
                 FROM items
                 LEFT JOIN supplier 
                     ON items.supplier_id = supplier.id
@@ -36,14 +35,13 @@ export const getItems = async (params) => {
                 timeout: 60
             }, function(error, result, fields) {
                 if (error) reject(error);
+                console.log(`result`, result);
                 resolve({
                     data: result,
                     count: countResult?.[0]?.total_rows
                 });
             });
         });
-        
-        
     });
 }
 

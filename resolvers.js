@@ -3,6 +3,7 @@ import { destroySupplier, getSuppliers, storeSupplier, findSupplier, updateSuppl
 import { getCategories, storeCategory, destroyCategory, updateCategory, findCategory } from './app/helpers/categories_resolver_helpers.js';
 import { getSales, getSalesDetails, getSalesOverView, storeSales } from "./app/helpers/sales_resolver_helpers.js";
 import { register, login, getUsers, findUser, updateUser, destroyUser } from './app/helpers/users_resolver_helpers.js';
+import { GraphQLError } from "graphql";
 
 export const resolvers = {
     Query: {
@@ -27,12 +28,14 @@ export const resolvers = {
             return await findSupplier(args.id);
         },  
         getSales: async (_, args) => {
+            console.log(`getting sales`, args);
             return await getSales(args.filter);
         },
         inventorySummary: async (root, args) => {
             return await getInventorySummary(args);
         },
         getSalesOverview: async (root, args) => {
+            console.log(`get sales overview`, args);
             return await getSalesOverView(args);
         },
         getSalesDetails: async (root, args) => {
@@ -84,8 +87,20 @@ export const resolvers = {
             return await register(args.user);
         },
         login: async(root, args, context) => {
-            console.log(`context`, context);
-            return await login(args.user)
+            try {
+                const userLogin = await login(args.user);
+                if (!userLogin?.success) {
+                    return new GraphQLError("Invalid username or password", {
+                        extensions: {
+                            code: '1001'
+                        }
+                    });
+                }
+                return userLogin?.data;
+            } catch (error) {
+                return { error: true };
+            }
+           
         },
         updateUser: async(root, args) => {
             return await updateUser(args.user);

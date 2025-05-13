@@ -71,16 +71,21 @@ export const storeSales = (args) => {
 export const getSales = (filter) => {
     console.log(`filter`, filter);
     const today = formatDate(new Date, "yyyy-MM-dd");
-    const span = filter?.dateRange ? filter?.dateRange : "Last 7 Days";
+    const span = filter?.dateRange ? filter?.dateRange : "Today";
     var from = "";
+    var startingDate = "";
     if (span === "Today") {
         from = formatDate(new Date, "yyyy-MM-dd");
+        startingDate = today;
     } else if (span === "Yesterday") {
         from = formatDate(dateFns.subDays(new Date, 1), "yyyy-MM-dd");
+        startingDate = from;
     } else if (span === "Last 7 Days") {
         from = formatDate(dateFns.subDays(new Date, 7), "yyyy-MM-dd");
+        startingDate = today
     } else if (span === "Last 30 Days") {
         from = formatDate(dateFns.subDays(new Date, 30), "yyyy-MM-dd");
+        startingDate = today;
     }
 
     const salesQuery = `
@@ -91,7 +96,7 @@ export const getSales = (filter) => {
     `;
 
     return new Promise((resolve, reject) => {
-        connection.query(salesQuery, [from, today, filter.storeId], function(error, salesQueryResult) {
+        connection.query(salesQuery, [from, startingDate, filter.storeId], function(error, salesQueryResult) {
             if (error) reject(error);
             const sales_description_query = `
                 SELECT sales.transaction_number, sales.customer_name, SUM(sales_description.quantity) as totalItems, SUM(sales_description.price * sales_description.quantity) as total, sales.date_time
@@ -126,8 +131,6 @@ export const getSalesOverView = (args) => {
         data[formatDate(dateKey, keyFormat)] = 0;
     }
     data[formatDate(today, keyFormat)] = 0;
-    console.log(`today`, today);
-    console.log(`from`, from);
     return new Promise((resolve, reject) => {
         const query = `
             SELECT * FROM sales_description 
@@ -147,8 +150,8 @@ export const getSalesOverView = (args) => {
                 });
             }
             const response = {
-                data: Object.values(data)?.map((value) => value),
-                keys: Object.keys(data)?.map((value) => value ),
+                data: Object.values(data)?.map((value) => value)?.reverse(),
+                keys: Object.keys(data)?.map((value) => value )?.reverse(),
             };
             resolve(response);
         });

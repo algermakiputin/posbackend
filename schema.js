@@ -154,6 +154,7 @@ export const typeDefs = `#graphql
         firstName: String
         lastName: String
         storeId: ID
+        accountType: String
     }
     input LoginInput {
         email: String
