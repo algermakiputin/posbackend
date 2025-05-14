@@ -84,6 +84,9 @@ export const typeDefs = `#graphql
         quantity: Int
         created_at: String
     }
+    type Test {
+        message: String
+    }
     input getSalesInput {
         dateRange: String
         storeId: ID
@@ -101,7 +104,7 @@ export const typeDefs = `#graphql
         getSalesDetails(transaction_number: String): [SalesDetails]
         getUsers(adminId: ID): [User]
         user(userId: ID): User
-        test: String
+        test: Test
     }
     type GenericRepose {
         success: Boolean,

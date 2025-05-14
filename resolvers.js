@@ -8,7 +8,9 @@ import { GraphQLError } from "graphql";
 export const resolvers = {
     Query: {
         test: async () => {
-            return "Hello world";
+            return {
+                message: "Hello world"
+            };
         },
         items: async (root, args) => {
             return await getItems(args);
