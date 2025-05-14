@@ -101,6 +101,7 @@ export const typeDefs = `#graphql
         getSalesDetails(transaction_number: String): [SalesDetails]
         getUsers(adminId: ID): [User]
         user(userId: ID): User
+        test: String
     }
     type GenericRepose {
         success: Boolean,
