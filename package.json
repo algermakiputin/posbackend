@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,12 +14,14 @@
   "dependencies": {
     "@apollo/client": "^3.12.5",
     "@apollo/server": "^4.11.2",
+    "apollo-server-express": "^3.13.0",
     "bcrypt": "^5.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "graphql": "^16.9.0",
     "jsonwebtoken": "^9.0.2",
+    "log4js": "^6.9.1",
     "mysql": "^2.18.1",
     "node-localstorage": "^3.0.5"
   }

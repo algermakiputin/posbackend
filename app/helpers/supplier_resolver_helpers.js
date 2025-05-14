@@ -25,7 +25,10 @@ export const storeSupplier = async (supplier) => {
     console.log(`supplier`,supplier);
     return new Promise((resolve, reject) => {
         connection.query("INSERT INTO supplier SET ?", supplier, function(error, result) {
-            if (error) reject(error);
+            if (error) {
+                console.log(`error`, error);
+                reject(error)
+            };
             resolve({
                 success: true,
                 data: JSON.stringify(result)
