@@ -93,6 +93,7 @@ export const resolvers = {
         },
         login: async(root, args, context) => {
             try {
+                console.log(`login args`, args);
                 const userLogin = await login(args.user);
                 if (!userLogin?.success) {
                     return new GraphQLError("Invalid username or password", {

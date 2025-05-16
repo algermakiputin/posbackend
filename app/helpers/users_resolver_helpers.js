@@ -74,9 +74,10 @@ export const login = async (user) => {
         return new Promise((resolve, reject) => {
             connection.query("SELECT * FROM users WHERE email = ? LIMIT 1", user.email, async function(error, result) {
                 if (error) reject(error); 
+                console.log(`result`, result);
                 if (result?.length) {
                     const match = await bcrypt.compare(user.password, result?.[0]?.password);
-                    if (match) {
+                    if (match) { 
                         const userResult = result?.[0];
                         const userId = userResult?.account_type === "Admin" ? userResult?.id : userResult?.admin_id;
                         connection.query("SELECT id FROM stores WHERE user_id = ?", userId, function(error, storeResult){
