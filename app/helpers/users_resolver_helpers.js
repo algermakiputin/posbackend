@@ -113,6 +113,11 @@ export const login = async (user) => {
                             message: 'Username and password does not match'
                         });
                     }
+                } else {
+                    resolve({
+                        success: false,
+                        message: 'User not found'
+                    });
                 }
             });
         });

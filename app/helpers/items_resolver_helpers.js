@@ -69,6 +69,7 @@ export const findItem = async (itemId) => {
 }
 
 export const updateItem = async (item) => {
+    console.log(`item`, item);
     return new Promise((resolve, reject) => {
         connection.query("UPDATE items SET ? WHERE id = ?", [item, item?.id], function(error, result) {
             if (error) reject(error);

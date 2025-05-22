@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import connection from "../config/database.js";
 import * as dateFns from 'date-fns';
 
@@ -5,13 +6,14 @@ export const storeSales = (args) => {
     return new Promise((resolve, reject) => {
         connection.beginTransaction(function(error) {
             if (error) {
+                console.log(`begin transaction error`, JSON.stringify(error));
                 reject(error);
             }
-            connection.query("SELECT MAX(id) as max_id from SALES", function(error, result) {
+            connection.query("SELECT MAX(id) as max_id from sales", function(error, result) {
                 if (error) {
                     reject(error);
                 }
-                const maxId = result[0]?.max_id;
+                const maxId = result?.[0]?.max_id ? parseInt(result?.[0]?.max_id) : 0;
                 const transaction_number = generateTransactionNumber(maxId + 1);
                 const salesData = {
                     transaction_number: transaction_number,
@@ -23,9 +25,10 @@ export const storeSales = (args) => {
                 connection.query("INSERT INTO sales SET ?", salesData , function(error, sales_result) {
                     if (error) {
                         return connection.rollback(function() {
-                            reject(error);
+                            reject(new GraphQLError(error));
                         })
-                    } 
+                    };
+                    console.log(`sales result`, JSON.stringify(sales_result));
                     const salesId = parseInt(sales_result?.insertId);
                     const lineItems = args?.cart?.lineItems.map((lineItem) => {
                         return [
@@ -49,18 +52,20 @@ export const storeSales = (args) => {
                     console.log(`values`, lineItems);
                     connection.query("INSERT INTO sales_description (sales_id, item_id, name, price, quantity, barcode, capital, discount, profit, user_id, staff, returned, created_at, transaction_number, store_id) VALUES ?", [lineItems], function(error, result) {
                         if (error) {
+                            console.log(`sales description error`, JSON.stringify(error));
                             return connection.rollback(function() {
-                                reject(`error`, error);
+                                reject(new GraphQLError(error));
                             })
                         }
                         connection.commit(function(error) {
-                            if (error) reject(error)
+                            console.log(`error committing transaction`, JSON.stringify(error));
+                            if (error) reject(new GraphQLError(error))
+                            console.log(`transaction number`, transaction_number);
                             resolve({
                                 success: true,
                                 message: transaction_number
                             });
                         })
-                        
                     });
                 });
             });

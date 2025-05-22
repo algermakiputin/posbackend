@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
     password : process.env.DATABASE_PASSWORD,
     database : process.env.DATABASE_NAME,
     port: process.env.DATABASE_PORT,
-    debug: false
+    debug: true
 });
 
 connection.connect(function(err) {
@@ -17,7 +17,7 @@ connection.connect(function(err) {
         console.error('error connecting to the database: ' + err.stack);
         return;
     }
-    logger('connected as id ' + connection.threadId);
+    logger.info('connected as id ' + connection.threadId);
     console.log('connected as id ' + connection.threadId);
 });
 export default connection;
