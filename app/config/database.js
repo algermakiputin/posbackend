@@ -13,11 +13,11 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) {
-        logger.error('error connecting to the database: ' + err.stack);
+        //logger.error('error connecting to the database: ' + err.stack);
         console.error('error connecting to the database: ' + err.stack);
         return;
     }
-    logger('connected as id ' + connection.threadId);
+    //logger('connected as id ' + connection.threadId);
     console.log('connected as id ' + connection.threadId);
 });
 export default connection;

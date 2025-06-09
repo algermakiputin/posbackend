@@ -72,12 +72,12 @@ export const register = async (user) => {
 };
 
 export const login = async (user) => {
-    logger.info(`user param ${JSON.stringify(user)}`);
+    //logger.info(`user param ${JSON.stringify(user)}`);
     if (user.email && user.password) {
         return new Promise((resolve, reject) => {
             connection.query("SELECT * FROM users WHERE email = ? LIMIT 1", user.email, async function(error, result) {
                 if (error) reject(error);
-                logger.info(`user query result: ${JSON.stringify(result)}`);
+                //logger.info(`user query result: ${JSON.stringify(result)}`);
                 console.log(`result`, result);
                 if (result?.length) {
                     const match = await bcrypt.compare(user.password, result?.[0]?.password);
@@ -86,7 +86,7 @@ export const login = async (user) => {
                         const userId = userResult?.account_type === "Admin" ? userResult?.id : userResult?.admin_id;
                         connection.query("SELECT id FROM stores WHERE user_id = ?", userId, function(error, storeResult){
                             if (error) {
-                                logger.error(`error fetching user: ${JSON.stringify(error)}`);
+                                //logger.error(`error fetching user: ${JSON.stringify(error)}`);
                                 reject(error)
                             };
                             const token = generateToken(userResult?.id, userResult);
@@ -100,14 +100,14 @@ export const login = async (user) => {
                                 storeId: storeResult?.[0]?.id,
                                 accountType: userResult?.account_type
                             };
-                            logger.info(`response ${JSON.stringify(response)}`);
+                            //logger.info(`response ${JSON.stringify(response)}`);
                             resolve({
                                 success: true,
                                 data: response
                             });
                         });
                     } else {
-                        logger.info(`Username and password does not match`);
+                        //logger.info(`Username and password does not match`);
                         resolve({
                             success: false,
                             message: 'Username and password does not match'
