@@ -4,7 +4,6 @@ import * as bcrypt from 'bcrypt';
 import 'dotenv/config';
 import { GraphQLError } from "graphql";
 import { LocalStorage } from "node-localstorage";
-import logger from '../logger/logger.js';
 
 global.localStorage = new LocalStorage('./scratch');
 

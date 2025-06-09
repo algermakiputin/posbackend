@@ -1,6 +1,5 @@
 import mysql from 'mysql';
 import 'dotenv/config';
-import logger from '../logger/logger.js';
 
 var connection = mysql.createConnection({
     host     : process.env.DATABASE_HOST,
