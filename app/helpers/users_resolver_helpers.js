@@ -3,9 +3,6 @@ import jsonwebtoken from "jsonwebtoken";
 import * as bcrypt from 'bcrypt';
 import 'dotenv/config';
 import { GraphQLError } from "graphql";
-import { LocalStorage } from "node-localstorage";
-
-global.localStorage = new LocalStorage('./scratch');
 
 export const register = async (user) => {
     if (user.password == user.confirmPassword) {
@@ -89,7 +86,6 @@ export const login = async (user) => {
                                 reject(error)
                             };
                             const token = generateToken(userResult?.id, userResult);
-                            localStorage.setItem('token', token);
                             const response = {
                                 token,
                                 firstName: userResult?.firstName,

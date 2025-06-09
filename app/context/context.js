@@ -1,8 +1,6 @@
 import jsonwebtoken from "jsonwebtoken";
 import 'dotenv/config';
-import { LocalStorage } from "node-localstorage";
 import { GraphQLError } from "graphql";
-global.localStorage = new LocalStorage('./scratch');
 
 export const getUser = (token) => {
     try {
